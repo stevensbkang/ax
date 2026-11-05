@@ -5,12 +5,21 @@ kind: AgentProfile
 metadata:
   name: coding-agent
 spec:
-  description: Makes a project's failing tests pass and reports the diff.
-  image: localhost:5001/ax-demo-agent@sha256:DIGEST
+  description: Makes a project's failing tests pass, then reports the change and the test results.
+  image: localhost:5001/ax-demo-agent@sha256:a4362cd2b380252b6ff606413718fe0f932ca45350f011c362cc236ffdc84808
   command: ["python3", "/opt/agent/agent.py"]
   resources:
     limits:
       cpu: "1"
       memory: 2Gi
-  modelGateway: http://ax-model-gateway.ax-system.svc:8080
+  modelGateway: http://ax-model-gateway.ax-system.svc.cluster.local:8080
   debug: true
+  # Agent Substrate egress rules: the task reaches the model gateway and
+  # GitHub (to clone its workspace), and nothing else.
+  egress:
+    - http:
+        hostnames: [ax-model-gateway.ax-system.svc.cluster.local]
+        ports: {numbers: [8080]}
+    - tlsPassthrough:
+        hostnames: [github.com]
+        ports: {numbers: [443]}
