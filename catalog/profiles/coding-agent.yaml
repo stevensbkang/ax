@@ -6,7 +6,7 @@ metadata:
   name: coding-agent
 spec:
   description: Makes a project's failing tests pass, then reports the change and the test results.
-  image: localhost:5001/ax-demo-agent@sha256:1f69880ee1e52bb9bfac712e7284adf9c8ee2b4bfa7839393b75d10a1953c8b7
+  image: localhost:5001/ax-demo-agent@sha256:5add3b29890c1bfc302b672c07be605d54604ff687816d5aebb10b1288959d69
   command: ["python3", "/opt/agent/agent.py"]
   resources:
     limits:
