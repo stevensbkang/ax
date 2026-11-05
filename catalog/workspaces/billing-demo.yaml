@@ -1,0 +1,11 @@
+apiVersion: ax.io/v1alpha1
+kind: Workspace
+metadata:
+  name: billing-demo
+  atespace: default
+spec:
+  git:
+    - name: ax-demo
+      repo: https://github.com/stevensbkang/ax
+      branch: main
+      depth: 1

@@ -1,0 +1,16 @@
+# A Portainer agent profile: everything about a task except what the user asks
+# for. Portainer expands it into the AX Task; the planner only picks it by name.
+apiVersion: portainer.io/v1alpha1
+kind: AgentProfile
+metadata:
+  name: coding-agent
+spec:
+  description: Makes a project's failing tests pass and reports the diff.
+  image: localhost:5001/ax-demo-agent@sha256:DIGEST
+  command: ["python3", "/opt/agent/agent.py"]
+  resources:
+    limits:
+      cpu: "1"
+      memory: 2Gi
+  modelGateway: http://ax-model-gateway.ax-system.svc:8080
+  debug: true
