@@ -33,6 +33,22 @@ def log(message):
     print(f"[agent] {message}", flush=True)
 
 
+def finish_checkouts():
+    """Checks out repos the runner set up but couldn't fetch.
+
+    AX prepares a workspace when the task is created, before Portainer can give
+    the task its egress policy, so the runner's fetch can fail. By the time the
+    agent runs, egress is in place and the fetch can be retried.
+    """
+    for git_dir in sorted(WORKSPACE.glob("*/.git")):
+        repo = git_dir.parent
+        if any(path.name != ".git" for path in repo.iterdir()):
+            continue
+        log(f"finishing the checkout of {repo.name}")
+        subprocess.run(["git", "fetch", "--depth", "1", "origin", "HEAD"], cwd=repo, check=True)
+        subprocess.run(["git", "-c", "advice.detachedHead=false", "checkout", "-f", "FETCH_HEAD"], cwd=repo, check=True)
+
+
 def find_project():
     """The project is the directory holding AGENTS.md, wherever the workspace cloned it."""
     for agents in sorted(WORKSPACE.rglob("AGENTS.md")):
@@ -94,6 +110,7 @@ def git_diff(project):
 
 
 def main():
+    finish_checkouts()
     project = find_project()
     log(f"goal: {GOAL}")
     log(f"project: {project}")
