@@ -126,7 +126,12 @@ def main():
             f"Goal: {GOAL}\n\nFiles:\n{json.dumps(files, indent=2)}\n\n"
             f"Test output:\n{output}"
         )
-        summary, changes = parse_reply(ask(prompt))
+        try:
+            summary, changes = parse_reply(ask(prompt))
+        except Exception as err:  # reported in the result, so the user sees why
+            log(f"the model call failed: {err}")
+            summaries.append(f"The model call failed: {err}")
+            break
         summaries.append(summary)
         log(f"model: {summary}")
         apply_files(project, changes)
